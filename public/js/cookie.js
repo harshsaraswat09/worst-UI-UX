@@ -21,15 +21,52 @@ const loadingStatuses = [
     'Aankhon ke dard ki taiyari ho rahi hai...',
     'Unnecessary popups ban rahe hain...',
     'Almost ready...',
-    'Bas ek second...',
-    'Thoda aur ruko...',
+    'Bas ek second aur...',
+    'Thoda aur ruko bhai...',
     'Hamster servers se connect ho raha hai...',
     'Server hamsters ko khana de rahe hain...',
 ];
 
-// ===== LOADING SCREEN (REMOVED) =====
-document.getElementById('loading-overlay').style.display = 'none';
-document.getElementById('cookie-overlay').style.display = 'flex';
+// ===== LOADING SCREEN =====
+// Progress bar intentionally unreliable hai:
+// - Kabhi kabhi backward bhi jaati hai
+// - 95% pe artificially stuck ho jaati hai
+let loadProgress = 0;
+
+const loadingInterval = setInterval(() => {
+    if (Math.random() > 0.3) {
+        loadProgress += Math.random() * 8;     // Aage badho
+    } else {
+        loadProgress -= Math.random() * 15;    // Peeche jao (frustrating!)
+        if (loadProgress < 0) loadProgress = 0;
+    }
+
+    // 95-98% pe artificially atakna
+    if (loadProgress >= 95 && loadProgress < 100) {
+        loadProgress = 95 + Math.random() * 3;
+    }
+
+    if (loadProgress >= 100) {
+        loadProgress = 100;
+        document.getElementById('loading-bar').style.width = '100%';
+        document.getElementById('loading-percent').textContent = '100%';
+        document.getElementById('loading-status').textContent = 'Ready! Maza aayega... ya nahi bhi.';
+
+        // 1 second baad loading hatao, cookie banner dikhao
+        setTimeout(() => {
+            document.getElementById('loading-overlay').style.display = 'none';
+            document.getElementById('cookie-overlay').style.display = 'flex';
+        }, 1000);
+
+        clearInterval(loadingInterval);
+        return;
+    }
+
+    document.getElementById('loading-bar').style.width = loadProgress + '%';
+    document.getElementById('loading-percent').textContent = Math.floor(loadProgress) + '%';
+    document.getElementById('loading-status').textContent =
+        loadingStatuses[Math.floor(Math.random() * loadingStatuses.length)];
+}, 400);
 
 // ===== COOKIE BANNER BUTTONS =====
 // NOTE: Buttons SWAPPED hain - ye intentional UX crime hai

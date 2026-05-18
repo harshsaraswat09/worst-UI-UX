@@ -3,273 +3,395 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BestShop - The Worst Experience</title>
-    <style>
-        /* General Chaos CSS */
-        body { font-family: 'Comic Sans MS', cursive, sans-serif; overflow-x: hidden; margin: 0; padding: 0; transition: filter 0.5s; background-color: #f0f0f0; }
-        body.dark-mode { filter: invert(1) hue-rotate(180deg); background-color: #111; color: #eee; }
-        body.konami-mode { animation: rave 0.5s infinite; }
-        @keyframes rave { 0% { background-color: red; } 33% { background-color: lime; } 66% { background-color: blue; } 100% { background-color: magenta; } }
-        
-        /* The terrible scrollbar */
-        ::-webkit-scrollbar { width: 60px; }
-        ::-webkit-scrollbar-track { background: repeating-linear-gradient(45deg, red, red 10px, yellow 10px, yellow 20px); }
-        ::-webkit-scrollbar-thumb { background: blue; border-radius: 0; border: 5px dashed green; }
-        
-        #custom-cursor { position: fixed; pointer-events: none; z-index: 9999; font-size: 24px; transform: translate(-50%, -50%); transition: transform 0.2s; }
-        
-        #main-content { padding: 20px; transition: transform 0.1s; }
-        .jitter { transform: translate(5px, 5px) rotate(1deg); }
-
-        /* Ticker */
-        #ticker-container { background: yellow; color: red; font-weight: bold; overflow: hidden; white-space: nowrap; padding: 5px; position: sticky; top: 0; z-index: 100; border-bottom: 3px dashed black; }
-        
-        /* Products Grid */
-        #products { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; margin-top: 20px; }
-        .product-card { background: white; border: 2px solid #333; padding: 15px; width: 200px; text-align: center; transform: rotate(var(--rotation)); box-shadow: 5px 5px 0px #000; position: relative; }
-        .fake-badge { position: absolute; top: -10px; right: -10px; background: red; color: white; padding: 5px; font-weight: bold; transform: rotate(15deg); }
-        .buy-btn { background: green; color: white; border: none; padding: 10px; cursor: pointer; width: 100%; font-weight: bold; margin-top: 10px; }
-
-        /* Reviews */
-        #reviews-section { display: flex; overflow-x: scroll; padding: 20px; gap: 15px; background: #ddd; margin-top: 30px; }
-        .review-card { background: white; padding: 10px; min-width: 200px; transform: rotate(var(--rot)); border: 1px solid #999; }
-
-        /* Snow */
-        #snow-container { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9000; overflow: hidden; }
-        .snowflake { position: absolute; top: -50px; animation: fall linear infinite; }
-        @keyframes fall { to { transform: translateY(110vh); } }
-
-        /* Scroll Progress */
-        #scroll-progress-container { position: fixed; top: 0; left: 0; width: 100%; height: 5px; background: transparent; z-index: 9999; }
-        #scroll-progress { height: 100%; background: red; width: 100%; } /* Inverted logic */
-
-        /* Evil Tooltip */
-        #evil-tooltip { position: fixed; background: black; color: white; padding: 5px 10px; z-index: 10000; display: none; pointer-events: none; font-size: 12px; }
-
-        /* Toast Container */
-        #toast-container { position: fixed; bottom: 20px; left: 20px; z-index: 9998; display: flex; flex-direction: column; gap: 10px; }
-        .toast { background: #333; color: white; padding: 10px 15px; border-radius: 5px; animation: slideIn 0.3s; display: flex; align-items: center; gap: 10px; }
-        .toast-type { background: #555; padding: 2px 5px; border-radius: 3px; font-size: 10px; text-transform: uppercase; }
-        @keyframes slideIn { from { transform: translateX(-100%); } to { transform: translateX(0); } }
-
-        /* Popups */
-        .popup { position: fixed; background: white; border: 3px solid black; padding: 20px; box-shadow: 10px 10px 0px rgba(0,0,0,0.5); z-index: 9500; min-width: 250px; }
-        .btn-close { position: absolute; top: -10px; background: red; color: white; border: 2px solid black; border-radius: 50%; width: 30px; height: 30px; cursor: pointer; font-weight: bold; }
-
-        /* Chat Window */
-        #chat-window { position: fixed; bottom: 20px; right: 20px; width: 300px; height: 400px; background: white; border: 2px solid #000; display: none; z-index: 9900; flex-direction: column; box-shadow: -5px -5px 0px red; }
-        #chat-toggle { position: fixed; bottom: 20px; right: 20px; z-index: 9900; background: blue; color: white; padding: 15px; border-radius: 50%; cursor: pointer; border: 2px solid black; font-weight: bold; box-shadow: 2px 2px 0px black; }
-        #chat-messages { flex-grow: 1; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; gap: 10px; background: #f9f9f9; }
-        .chat-msg { padding: 8px 12px; border-radius: 15px; max-width: 80%; }
-        .chat-msg.user { align-self: flex-end; background: #dcf8c6; border-bottom-right-radius: 0; }
-        .chat-msg.bot { align-self: flex-start; background: #fff; border: 1px solid #ccc; border-bottom-left-radius: 0; }
-        .confidence { font-size: 10px; color: #888; margin-top: 5px; font-style: italic; }
-        #chat-input-container { display: flex; padding: 10px; border-top: 1px solid #ccc; }
-        #chat-input { flex-grow: 1; padding: 8px; }
-        #chat-typing { font-size: 12px; color: gray; padding: 0 10px; height: 15px; }
-
-        /* Forms */
-        .form-section { background: #ffe; padding: 20px; border: 2px dashed orange; margin-top: 30px; }
-        #volume-grid { display: grid; grid-template-columns: repeat(10, 1fr); gap: 2px; max-width: 300px; margin-top: 10px; }
-        .volume-cell { border: 1px solid #999; text-align: center; cursor: pointer; font-size: 10px; background: #ddd; }
-        .volume-cell.active { background: red; color: white; font-weight: bold; }
-        
-        #signature-canvas { border: 2px solid blue; background: #eee; cursor: crosshair; display: block; margin-top: 10px; }
-
-        #terms-container { position: relative; height: 50px; background: #eee; border: 1px solid #ccc; margin-top: 10px; overflow: hidden; }
-        #terms-label { position: absolute; cursor: pointer; background: white; padding: 5px; border: 1px solid black; transition: all 0.1s; }
-
-        .shipping-option { border: 1px solid #ccc; padding: 10px; margin: 5px 0; cursor: pointer; display: flex; justify-content: space-between; align-items: center; background: white; }
-        .shipping-option.selected { background: #e0ffe0; border-color: green; border-width: 2px; }
-
-        /* Dashboard */
-        #dashboard { background: #333; color: lime; padding: 20px; font-family: monospace; margin-top: 30px; }
-        #hamster-grid { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
-        .hamster-card { border: 1px solid lime; padding: 10px; width: 120px; text-align: center; }
-        .hamster-emoji { font-size: 30px; }
-        
-        /* Overlays */
-        #countdown-overlay, #exit-popup { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.8); z-index: 10000; display: none; justify-content: center; align-items: center; color: white; text-align: center; flex-direction: column; }
-        #countdown-timer { font-size: 100px; font-weight: bold; color: red; }
-
-        /* Header UI */
-        header { display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; background: #fff; border-bottom: 2px solid #000; position: sticky; top: 30px; z-index: 90; }
-        
-        /* Floating Ads */
-        .floating-ad { position: fixed; border: 3px dotted red; background: yellow; padding: 20px; z-index: 8000; font-weight: bold; text-align: center; box-shadow: 5px 5px 0px rgba(0,0,0,0.2); }
-
-        .faq-question { cursor: pointer; background: #ddd; padding: 10px; margin-top: 5px; font-weight: bold; }
-        .faq-answer { display: none; padding: 10px; border: 1px solid #ddd; background: #fff; transform: rotate(180deg); }
-        .faq-answer.show { display: block; }
-    </style>
+    <title>BestShop - Sabse Bura Online Shop (Trust Karo Hamen)</title>
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-    <div id="scroll-progress-container"><div id="scroll-progress"></div></div>
+
+    <!-- Custom Cursor -->
     <div id="custom-cursor">🍕</div>
-    <div id="snow-container"></div>
-    <div id="evil-tooltip"></div>
-    <div id="toast-container"></div>
 
-    <!-- Loading & Cookie Overlays -->
-    <div id="loading-overlay" style="position:fixed;top:0;left:0;width:100vw;height:100vh;background:black;color:lime;z-index:999999;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:monospace;">
-        <h1>LOADING CHAOS...</h1>
-        <div style="width:80%;height:30px;border:3px solid lime;margin:20px;">
-            <div id="loading-bar" style="width:0%;height:100%;background:red;transition:width 0.2s;"></div>
-        </div>
-        <h2 id="loading-percent">0%</h2>
-        <p id="loading-status">Initializing quantum processors...</p>
+    <!-- Snow -->
+    <div class="snow-container" id="snow-container"></div>
+
+    <!-- Toast Notifications -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <!-- Evil Tooltip -->
+    <div class="evil-tooltip" id="evil-tooltip"></div>
+
+    <!-- Scroll Progress Bar (inverted) -->
+    <div class="scroll-progress" id="scroll-progress"></div>
+
+    <!-- Mouse Tracker (fixed panel) -->
+    <div id="mouse-tracker">
+        🔴 LIVE TRACKING<br>
+        Position: <span id="track-pos">0, 0</span><br>
+        <span id="track-msg" style="color:yellow;font-size:10px;"></span>
     </div>
 
-    <div id="cookie-overlay" style="position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.9);z-index:999998;display:none;flex-direction:column;align-items:center;justify-content:center;color:white;text-align:center;">
-        <div id="cookie-banner" style="background:white;color:black;padding:40px;border:10px dotted red;max-width:600px;">
-            <h2>🍪 We value your privacy! (Just kidding)</h2>
-            <p style="font-size:8px;color:#aaa;">By continuing, you agree to sell your soul, let us track your mouse, and accept 47,000 cookies.</p>
-            <button id="cookie-accept-btn" style="background:none;border:none;color:#ddd;font-size:6px;cursor:pointer;">Only necessary cookies</button>
-            <br><br>
-            <button id="cookie-reject-btn" style="background:green;color:white;padding:20px;font-size:24px;font-weight:bold;animation:rave 0.5s infinite;cursor:pointer;">ACCEPT ALL</button>
+    <!-- Notification Badge -->
+    <div class="notification-explosion">
+        <div class="notif-badge" id="notif-badge" onclick="addNotifications()">
+            <span id="notif-count">99+</span>
         </div>
     </div>
 
-    <div id="ticker-container"><marquee id="ticker-messages" scrollamount="15">Welcome to BestShop! The best place to lose your money and your mind!</marquee></div>
+    <!-- Fixed Buttons -->
+    <button id="sound-toggle" onclick="toggleSound()" title="Sound">🔇</button>
+    <button class="dark-mode-toggle" onclick="toggleDarkMode()" title="Dark Mode">🌙</button>
 
-    <header>
-        <h1>BestShop 🛒</h1>
-        <div>
-            <button id="sound-toggle" onclick="toggleSound()" style="font-size:20px;background:none;border:none;cursor:pointer;margin-right:10px;">🔇</button>
-            <button onclick="toggleDarkMode()">Toggle Dark Mode</button>
-            <span style="margin-left: 20px;">Notifications: <span id="notif-count" style="background:red;color:white;padding:2px 5px;border-radius:10px;font-weight:bold;cursor:pointer;" onclick="addNotifications()">0</span></span>
+    <!-- Loading Screen -->
+    <div id="loading-overlay">
+        <h1 style="font-family:'Comic Sans MS',cursive;font-size:36px;">BestShop.in Load Ho Raha Hai...</h1>
+        <p style="font-size:18px;">Ruko Please. Browser band MAT karna.</p>
+        <div style="width:400px;height:30px;border:2px solid #333;margin:20px;position:relative;overflow:hidden;">
+            <div id="loading-bar" style="height:100%;background:green;width:0%;transition:width 0.5s;"></div>
         </div>
-    </header>
+        <p id="loading-percent" style="font-size:24px;font-weight:bold;">0%</p>
+        <p id="loading-status" style="font-size:14px;color:#666;">Quantum processors initialize ho rahe hain...</p>
+    </div>
 
-    <div id="main-content">
-        <div style="background:#eef; padding: 10px; border: 1px solid #ccc; margin-bottom: 20px;">
-            <strong>Mouse Tracker:</strong> <span id="track-pos">0, 0</span> | <span id="track-msg">Waiting...</span><br>
-            <strong>Online Users:</strong> <span id="online-count">Loading...</span> | <strong>Visitors:</strong> <span id="visitor-counter">0</span>
-        </div>
-
-        <h2 style="text-align: center; margin-top: 40px;">Our Exclusive Products</h2>
-        <div id="products"></div>
-
-        <h2 style="text-align: center; margin-top: 40px;">Customer Reviews</h2>
-        <div id="reviews-section"></div>
-
-        <div class="form-section">
-            <h2>Registration Form (Good Luck)</h2>
-            <form onsubmit="return handleFormSubmit(event)">
-                <label>Password (Min 45 chars):</label><br>
-                <input type="text" id="reg-password" oninput="checkPassword(this.value)" style="width:100%; padding: 5px;"><br>
-                <div id="password-strength" style="display:none; padding: 5px; margin-top: 5px; font-size: 12px;"></div>
-                
-                <br><label>Confirm Password (MUST BE DIFFERENT):</label><br>
-                <input type="text" id="reg-password-confirm" style="width:100%; padding: 5px;"><br>
-                
-                <br><label>Birth Year:</label><br>
-                <select id="birth-year"></select><br>
-
-                <br><label>Set Newsletter Volume: <span id="volume-display">100%</span></label>
-                <div id="volume-grid"></div>
-
-                <br><label>CAPTCHA: Type this text -> <strong id="captcha-text" style="font-size:20px; background:#fff; padding:2px;"></strong> <button type="button" onclick="refreshCaptcha()">Refresh</button></label><br>
-                <input type="text" id="captcha-input">
-                <button type="button" onclick="verifyCaptcha()">Verify</button>
-                <div id="captcha-result" style="display:none; padding: 5px; margin-top: 5px;"></div>
-
-                <br><label>Digital Signature (Draw inverted):</label>
-                <canvas id="signature-canvas" width="300" height="100"></canvas>
-
-                <br><label>Accept Terms & Conditions:</label>
-                <div id="terms-container">
-                    <label id="terms-label"><input type="checkbox" required> I accept that I read nothing.</label>
+    <!-- Cookie Overlay -->
+    <div id="cookie-overlay" style="display:none;">
+        <div id="cookie-banner">
+            <h1>🍪 Cookie Settings 🍪</h1>
+            <p style="font-size:18px;">Hum 14,729 alag-alag cookies use karte hain aapka "experience improve" karne ke liye.</p>
+            <div class="cookie-text">
+                Is website ka use karke aap agree karte hain ki hum aapka data 847 third parties ko bech sakte hain, jisme shamil hai: aapke fridge ka content, aapki neend ki aadat, aapke jurab ki sankhya, aapke gupat recipes, aapke andar ke poude ke naam, aapki shower mein gaane ki playlist, Ananas on Pizza ke baare mein aapki raay, aur aap Team Cat hain ya Team Dog. Hum in sabka use aapke liye aisi ads banana mein karenge jo aapko chahiye nahi, par shayad phir bhi khareed lo. Is par click karte hi aap AGREE karte hain ki har Mangalwar ek biscuit hamare CEO ko bhejenge.
+            </div>
+            <div style="margin:20px 0;">
+                <p style="font-weight:bold;font-size:16px;">Cookie preferences chuniye:</p>
+                <div style="text-align:left;padding:10px;">
+                    <label><input type="checkbox" checked disabled> Essential Cookies (Zaruri)</label><br>
+                    <label><input type="checkbox" checked disabled> Tracking Cookies (Zaruri)</label><br>
+                    <label><input type="checkbox" checked disabled> Ad Cookies (Zaruri)</label><br>
+                    <label><input type="checkbox" checked disabled> Aatma Cookies (Zaruri)</label><br>
+                    <label><input type="checkbox" checked disabled> Pehlauta Bachcha Cookies (Zaruri)</label><br>
+                    <label><input type="checkbox" checked disabled> Interdimensional Cookies (Zaruri)</label><br>
+                    <label><input type="checkbox" disabled> Privacy Respect Karo (Aapke desh mein available nahi)</label>
                 </div>
+            </div>
+            <div>
+                <button class="cookie-btn-reject" id="cookie-reject-btn">SABHI ACCEPT KARO ✓</button>
+                <br>
+                <button class="cookie-btn-accept" id="cookie-accept-btn">Sirf Zaruri Cookies (yahan click karo)</button>
+            </div>
+            <p class="tiny-text" style="margin-top:20px;">
+                Note: "Sabhi Accept Karo" button actually sabhi cookies reject karta hai. Tiny button accept karta hai. Hum buttons swap kar diye kyunki hume funny laga.
+            </p>
+        </div>
+    </div>
 
-                <br><button type="submit" style="background:green;color:white;padding:10px 20px;border:none;cursor:pointer;">Register Now</button>
+    <!-- Exit Intent Popup -->
+    <div class="exit-popup" id="exit-popup">
+        <div>
+            <p>😱 RUKO! 😱</p>
+            <p style="font-size:28px;">Sach mein jaana chahte ho?</p>
+            <p style="font-size:18px;">Aap SAB KUCH pe 0% discount miss kar rahe ho!</p>
+            <div style="margin-top:30px;">
+                <button onclick="closeExitPopup()" style="background:gray;color:gray;border:1px solid gray;padding:15px 30px;font-size:18px;cursor:pointer;">Haan, Jaana Chahta Hoon</button>
+                <button onclick="closeExitPopup()" style="background:red;color:white;border:none;padding:15px 30px;font-size:18px;cursor:pointer;">NAHI! Main Ruk Ke Paise Lootaunga!</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Newsletter Countdown -->
+    <div class="countdown-overlay" id="countdown-overlay">
+        <h1>📧 NEWSLETTER SUBSCRIPTION 📧</h1>
+        <p style="font-size:24px;">Aap automatically subscribe ho jaoge in:</p>
+        <div class="timer" id="countdown-timer">10</div>
+        <p style="font-size:18px;">seconds</p>
+        <button class="skip-btn" onclick="closeCountdown()">cancel</button>
+    </div>
+
+    <!-- Floating Ads -->
+    <div class="floating-ad" id="ad1" style="top:100px;left:20px;width:200px;">
+        <p>🔥 AAPKE LOCALHOST MEIN HOT SINGLES! 🔥</p>
+        <p style="font-size:12px;">192.168.1.1 aapse milna chahta hai!</p>
+        <button class="ad-close" onclick="moveAd('ad1')">✕ band karo</button>
+    </div>
+    <div class="floating-ad" id="ad2" style="bottom:80px;left:20px;width:250px;">
+        <p>⚡ DOCTORS IS TRICK SE NAFRAT KARTE HAIN! ⚡</p>
+        <p style="font-size:12px;">Is aadmi ne CSS sikhi aur aap TRUST nahi karoge kya hua phir!</p>
+        <button class="ad-close" onclick="moveAd('ad2')">✕ band karo</button>
+    </div>
+
+    <!-- Live Ticker -->
+    <div id="live-ticker">
+        <div class="ticker-dot"></div>
+        <span class="ticker-label">● LIVE</span>
+        <div class="ticker-content">
+            <span class="ticker-messages" id="ticker-messages">Chaos Server se connect ho raha hai...</span>
+        </div>
+        <span id="online-count" style="color:cyan;font-size:11px;">👥 ---</span>
+    </div>
+
+    <!-- Chatbot -->
+    <div id="chatbot">
+        <div id="chat-window">
+            <div id="chat-header">
+                <div>
+                    <h3>🤖 BestBot 3000</h3>
+                    <div class="status" id="chat-status">● Online (Afsos)</div>
+                </div>
+                <button onclick="toggleChat()" style="background:none;border:none;color:white;font-size:20px;cursor:pointer !important;">✕</button>
+            </div>
+            <div id="chat-messages"></div>
+            <div id="chat-typing"></div>
+            <div id="chat-input-area">
+                <input type="text" id="chat-input" placeholder="Likho... (koi fayda nahi)" onkeypress="if(event.key==='Enter')sendChat()">
+                <button id="chat-send" onclick="sendChat()">📤</button>
+            </div>
+        </div>
+        <button id="chat-toggle" onclick="toggleChat()">💬 Help? (LOL) <span style="background:white;color:red;border-radius:50%;padding:2px 8px;font-size:12px;margin-left:5px;">3</span></button>
+    </div>
+
+    <!-- ===== PAGE CONTENT ===== -->
+
+    <!-- Navigation -->
+    <nav>
+        <span class="logo">🛒 BestShop.in</span>
+        <div class="nav-links">
+            <a href="#products">Home</a>
+            <a href="#register-section">T&amp;C</a>
+            <a href="#cart-section">Help</a>
+            <a href="#payment-section">Contact</a>
+            <a href="#faq-section">Logout</a>
+        </div>
+    </nav>
+
+    <!-- Marquee Bar -->
+    <div class="marquee-bar">
+        <span>🚨 DHYAN DO: Ye website ek professional UX designer ne banai hai (usse baad nikal diya gaya) 🚨 FREE DELIVERY ₹99,999 se upar ke orders pe 🚨 WARNING: Side effects mein aankhon mein dard aur existential crisis shamil hain 🚨</span>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content" id="main-content">
+
+        <!-- Hero -->
+        <div style="text-align:center;padding:40px;direction:ltr;">
+            <h1 style="font-size:72px;color:red;text-shadow:5px 5px yellow;font-family:'Papyrus',fantasy;">
+                BESTSHOP MEIN AAPKA SWAGAT HAI
+            </h1>
+            <p style="font-size:24px;color:blue;background:yellow;display:inline-block;padding:10px;transform:rotate(-3deg);">
+                Woh online shop jahan aap kabhi dobara nahi aana chahenge!
+            </p>
+            <br><br>
+            <marquee behavior="alternate" scrollamount="15" style="font-size:36px;">
+                ⭐ SALE ⭐ 0% TAK DISCOUNT ⭐ SIRF AAJ ⭐ AUR KAL ⭐ AUR PARSON ⭐ MATLAB HAMESHA ⭐
+            </marquee>
+        </div>
+
+        <!-- Products -->
+        <div class="section-title">✨ HAMARE PRODUCTS ✨</div>
+        <div class="products-grid" id="products"></div>
+
+        <!-- Reviews -->
+        <div style="direction:ltr;padding:20px;">
+            <h2 style="text-align:center;font-size:36px;color:white;text-shadow:3px 3px black;">
+                ⭐ CUSTOMER REVIEWS ⭐
+                <span style="font-size:14px;display:block;">(100% real, bilkul fake nahi, promise)</span>
+            </h2>
+        </div>
+        <div class="sideways-section" id="reviews-section"></div>
+
+        <!-- Discount -->
+        <div class="discount-section" id="discount-section">
+            <h2 style="font-size:32px;">🎫 AAPKA PERSONAL DISCOUNT CODE 🎫</h2>
+            <p>Yahan click karo apna exclusive discount code paane ke liye!</p>
+            <button onclick="getDiscount()" style="background:red;color:white;border:none;padding:15px 40px;font-size:20px;cursor:pointer !important;font-family:'Comic Sans MS',cursive;border-radius:10px;">
+                🎰 DISCOUNT GENERATE KARO
+            </button>
+            <div id="discount-display"></div>
+        </div>
+
+        <!-- Server Status -->
+        <div id="server-status">
+            <h2>🖥️ LIVE SERVER STATUS 🖥️</h2>
+            <p style="text-align:center;font-size:12px;color:yellow;">Hamare hamster-powered infrastructure ka real-time monitoring</p>
+            <div class="hamster-grid" id="hamster-grid"></div>
+            <div class="server-stats" id="server-stats"></div>
+        </div>
+
+        <!-- FAQ -->
+        <div class="faq-section" id="faq-section">
+            <h2 style="text-align:center;font-size:36px;color:white;text-shadow:3px 3px black;">
+                ❓ FAQ - Aksar Ignore Kiye Gaye Sawaal ❓
+            </h2>
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">Kya main apna order return kar sakta hoon?</div>
+                <div class="faq-answer">Haan! Product ko kabutar ke zariye hamare Chaand wale office bhej do. Delivery time: 3-5 light years.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">Customer service se kaise milun?</div>
+                <div class="faq-answer">Hamare customer service se milne ke liye: dhuen ke zariye (Mon-Fri, 03:00-03:05 AM), telepathy se (poornima pe), ya circle mein teen baar ghoomke "BESTSHOP!" chillaiye.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">Ye website itni... aisi kyun hai?</div>
+                <div class="faq-answer">Humne 47 UX designers, 12 accessibility experts, aur ek goldfish se consult kiya. Goldfish jeeta.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">Kya ye site secure hai?</div>
+                <div class="faq-answer">Bilkul! Hum military-grade 2-bit encryption use karte hain aur saare passwords ek public Google Sheet mein plain text mein save karte hain. 🔒</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">Sab kuch kyun ghoom raha hai?</div>
+                <div class="faq-answer">Research kehti hai ki rotating elements se buying intention 4000% barhti hai. Source: Bhai bharosa karo.</div>
+            </div>
+        </div>
+
+        <!-- Registration Form -->
+        <div id="register-section">
+            <h2>📝 ACCOUNT BANAO 📝</h2>
+            <p style="text-align:center;font-size:14px;">Sirf 47 simple steps!</p>
+            <form id="hell-form" onsubmit="return handleFormSubmit(event)">
+                <div class="form-group">
+                    <label>📧 Email Address:</label>
+                    <input type="text" id="reg-email" placeholder="Security ke liye hidden dikhega">
+                    <div class="form-hint">Aapki email privacy ke liye ●●●●● dikhegi</div>
+                </div>
+                <div class="form-group">
+                    <label>🔑 Password:</label>
+                    <input type="text" id="reg-password" placeholder="Clear text mein dikhega, kyunki hum honest hain" oninput="checkPassword(this.value)">
+                    <div class="form-hint">Min. 45 characters, 3 emojis, 1 hieroglyph aur Pi ke pehle 10 digits hone chahiye</div>
+                    <div class="password-strength" id="password-strength" style="display:none;"></div>
+                </div>
+                <div class="form-group">
+                    <label>🔑 Password Confirm Karo:</label>
+                    <input type="text" id="reg-password-confirm" placeholder="Pehle wale se ALAG password daalo">
+                    <div class="form-hint">Pehle password se alag hona chahiye (extra security ke liye)</div>
+                </div>
+                <div class="form-group">
+                    <label>📅 Birth Year:</label>
+                    <select id="birth-year" style="width:100%;padding:12px;font-size:16px;font-family:'Comic Sans MS',cursive;">
+                        <option value="">-- Apna janm saal chuniye --</option>
+                    </select>
+                    <div class="form-hint">Saal random order mein hain (aapki security ke liye)</div>
+                </div>
+                <div class="form-group">
+                    <label>🔊 Newsletter Volume:</label>
+                    <p style="font-size:12px;">Hamare emails ki kitni volume chahiye:</p>
+                    <div class="volume-grid" id="volume-grid"></div>
+                    <p style="text-align:center;font-size:14px;">Current Volume: <span id="volume-display">0</span>%</p>
+                </div>
+                <div class="form-group">
+                    <label>🤖 CAPTCHA - Prove karo ki aap human ho:</label>
+                    <div class="captcha-container">
+                        <div class="captcha-image" id="captcha-text">W̷̢̛X̵̢̛7̸͓̈́Q̸̰̈́</div>
+                        <br><br>
+                        <input type="text" id="captcha-input" placeholder="Text type karo (best of luck)" style="width:80%;padding:10px;font-size:16px;">
+                        <br><br>
+                        <button type="button" onclick="verifyCaptcha()" style="padding:10px 20px;font-size:14px;cursor:pointer !important;background:blue;color:white;border:none;border-radius:5px;">✓ CAPTCHA Check Karo</button>
+                        <button type="button" onclick="refreshCaptcha()" style="padding:10px 20px;font-size:14px;cursor:pointer !important;">🔄 Naya CAPTCHA</button>
+                        <div class="captcha-result" id="captcha-result"></div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Favourite number 1 se 10 ke beech:</label>
+                    <div class="age-slider-maze">
+                        <input type="range" min="1" max="10" value="5" step="0.0001" id="fav-number" oninput="document.getElementById('fav-num-display').textContent=parseFloat(this.value).toFixed(4)">
+                    </div>
+                    <p style="text-align:center;">Chosen: <span id="fav-num-display">5.0000</span></p>
+                    <div class="form-hint">Slider inverted aur ulta hai. Enjoy!</div>
+                </div>
+                <div class="form-group terms-container">
+                    <label class="runaway-checkbox" id="terms-label" style="left:20px;top:10px;">
+                        <input type="checkbox" id="terms-check"> Maine T&amp;C padhe aur apni aatma bech di
+                    </label>
+                </div>
+                <div style="text-align:center;margin-top:40px;">
+                    <p style="font-size:12px;color:#ccc;">Submit button neeche kahin chhupa hua hai ↓</p>
+                    <button type="submit" class="submit-btn" id="submit-btn">Submit</button>
+                </div>
             </form>
         </div>
 
-        <div class="form-section">
-            <h2>Your Cart</h2>
-            <table width="100%" border="1" style="border-collapse: collapse; text-align: center; background: white;">
-                <tr><th>Item</th><th>Quantity Slider</th><th>Action</th></tr>
-                <tr>
-                    <td>Invisible Socks</td>
-                    <td><input type="range" min="1" max="100" value="1"></td>
-                    <td><button onclick="addMore(this)" style="background:red;color:white;">Remove</button></td>
-                </tr>
+        <!-- Shopping Cart -->
+        <div id="cart-section">
+            <h2 style="text-align:center;font-size:36px;color:orange;">🛒 AAPKA CART 🛒</h2>
+            <p style="text-align:center;font-size:14px;color:#666;">Humne pehle se kuch cheezein daal di hain!</p>
+            <table class="cart-table">
+                <thead>
+                    <tr><th>Product</th><th>Quantity</th><th>Price</th><th>Action</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Invisible Socks</td>
+                        <td><input type="range" class="quantity-input" min="1" max="999" value="47" oninput="this.parentElement.nextElementSibling.querySelector('span').textContent=(this.value*9.99).toFixed(2)"></td>
+                        <td><span>469.53</span>₹</td>
+                        <td><button class="remove-btn" onclick="addMore(this)">🗑️ Hatao</button></td>
+                    </tr>
+                    <tr>
+                        <td>Organic Air (Can mein)</td>
+                        <td><input type="range" class="quantity-input" min="1" max="999" value="12" oninput="this.parentElement.nextElementSibling.querySelector('span').textContent=(this.value*49.99).toFixed(2)"></td>
+                        <td><span>599.88</span>₹</td>
+                        <td><button class="remove-btn" onclick="addMore(this)">🗑️ Hatao</button></td>
+                    </tr>
+                    <tr>
+                        <td>Used Pixels (Bulk Pack)</td>
+                        <td><input type="range" class="quantity-input" min="1" max="999" value="200" oninput="this.parentElement.nextElementSibling.querySelector('span').textContent=(this.value*0.01).toFixed(2)"></td>
+                        <td><span>2.00</span>₹</td>
+                        <td><button class="remove-btn" onclick="addMore(this)">🗑️ Hatao</button></td>
+                    </tr>
+                </tbody>
             </table>
-
-            <br>
-            <button onclick="getDiscount()" style="background:purple;color:white;padding:5px;">Apply Discount</button>
-            <div id="discount-display" style="margin-top: 10px;"></div>
-
-            <br>
-            <div id="shipping-options">Loading shipping...</div>
-
-            <br>
-            <label>Credit Card Number (Will be broadcasted live):</label><br>
-            <input type="text" oninput="broadcastCC(this.value)" placeholder="XXXX-XXXX-XXXX-XXXX">
-            <div id="cc-broadcast" style="margin-top: 5px; font-weight: bold; color: red;"></div>
-
-            <br><button type="button" onclick="handlePayment()" style="background:gold;padding:15px;font-size:18px;font-weight:bold;width:100%;cursor:pointer;">PAY NOW (Failure Guaranteed)</button>
+            <div style="text-align:right;margin-top:20px;">
+                <p style="font-size:14px;color:#999;">Subtotal: Bahut Saara</p>
+                <p style="font-size:14px;color:#999;">Shipping: Haan</p>
+                <p style="font-size:14px;color:#999;">Tax: Definitely</p>
+                <p style="font-size:14px;color:#999;">Saans Lene Ki Fee: ₹2.99</p>
+                <p style="font-size:28px;font-weight:bold;">TOTAL: <span id="cart-total" style="color:red;">∞₹</span></p>
+            </div>
         </div>
 
-        <div class="form-section">
-            <h2>FAQ (Read Upside Down)</h2>
-            <div class="faq-question" onclick="toggleFaq(this)">Q: Where is my order?</div>
-            <div class="faq-answer">A: We don't know either. Ask the carrier pigeon.</div>
-            
-            <div class="faq-question" onclick="toggleFaq(this)">Q: How do I refund?</div>
-            <div class="faq-answer">A: You can't. Thanks for the donation!</div>
-            
-            <div class="faq-question" onclick="toggleFaq(this)">Q: Is this website a joke?</div>
-            <div class="faq-answer">A: Yes. But your credit card charge is real. (Just kidding, it's fake)</div>
-        </div>
-
-        <div id="dashboard">
-            <h3>Hamster Server Dashboard</h3>
-            <div id="server-stats">Loading stats...</div>
-            <div id="hamster-grid"></div>
-        </div>
-    </div>
-
-    <!-- Floating Ad -->
-    <div id="ad-1" class="floating-ad" style="top: 20%; left: 10%; width: 200px;">
-        HOT SINGLES IN YOUR AREA WANT TO SELL YOU TUPPERWARE!<br><br>
-        <button onclick="moveAd('ad-1')">Close [X]</button>
-    </div>
-
-    <!-- Chat -->
-    <button id="chat-toggle" onclick="toggleChat()">💬 Chat</button>
-    <div id="chat-window">
-        <div style="background:blue;color:white;padding:10px;display:flex;justify-content:space-between;">
-            <b>BestBot 3000</b>
-            <button onclick="toggleChat()" style="background:red;color:white;border:none;cursor:pointer;">X</button>
-        </div>
-        <div id="chat-messages"></div>
-        <div id="chat-typing"></div>
-        <div id="chat-input-container">
-            <input type="text" id="chat-input" placeholder="Type nonsense here..." onkeypress="if(event.key==='Enter') sendChat()">
-            <button onclick="sendChat()">Send</button>
+        <!-- Payment -->
+        <div id="payment-section">
+            <h2 style="text-align:center;font-size:36px;color:gold;">💳 PAYMENT 💳</h2>
+            <p style="text-align:center;">Apna credit card public mein enter karo:</p>
+            <div class="shipping-options" id="shipping-options">
+                <h3 style="text-align:center;margin-bottom:15px;">📦 Delivery method chuno:</h3>
+                <p style="text-align:center;font-size:12px;color:#999;">Shipping options load ho rahe hain...</p>
+            </div>
+            <div class="form-group">
+                <label>Credit Card Number:</label>
+                <input type="text" class="cc-input" id="cc-number" placeholder="1234 5678 9012 3456" maxlength="19" oninput="broadcastCC(this.value)">
+                <div class="cc-hint" id="cc-broadcast">Aapka card number real-time mein sabko stream ho raha hai 📡</div>
+            </div>
+            <div class="form-group">
+                <label>CVV (Card ke peeche ke 3 funny numbers):</label>
+                <input type="text" class="cc-input" placeholder="Hamare homepage pe display hoga" maxlength="3" style="font-size:48px;letter-spacing:20px;">
+            </div>
+            <div class="form-group">
+                <label>Hastaakhar (Mouse se drawing karo):</label>
+                <canvas id="signature-canvas" width="700" height="150" style="border:3px solid #333;background:white;width:100%;cursor:crosshair !important;"></canvas>
+                <div class="form-hint">Aapka hastaakhar hamare AI se rate hoga. 10 mein se 8 chahiye.</div>
+            </div>
+            <div style="text-align:center;margin-top:30px;">
+                <button onclick="handlePayment()" style="background:red;color:white;border:none;padding:20px 60px;font-size:24px;cursor:pointer !important;font-family:'Comic Sans MS',cursive;animation:pulse 1s infinite;">
+                    💸 ABHI BHARO AUR PACHTAO 💸
+                </button>
+            </div>
         </div>
     </div>
 
-    <!-- Overlays -->
-    <div id="countdown-overlay">
-        <h1>SUBSCRIBE TO OUR NEWSLETTER IN</h1>
-        <div id="countdown-timer">10</div>
-        <button onclick="closeCountdown()" style="margin-top:20px;padding:10px;">I'd rather not</button>
-    </div>
-
-    <div id="exit-popup">
-        <h1>WAIT! DON'T LEAVE!</h1>
-        <p>WE WILL GIVE YOU 0% OFF IF YOU STAY!</p>
-        <button onclick="closeExitPopup()" style="padding:10px;font-size:20px;">I AM LEAVING</button>
-    </div>
-
-    <!-- Sounds (using Web Audio API in sounds.js) -->
-    <script src="/js/sounds.js"></script>
-    <script src="/js/cookie.js"></script>
+    <!-- Footer -->
+    <footer>
+        <p>© 2026 BestShop.in - Saare rights ulte hain</p>
+        <p>Impressum | Privacy | T&amp;C | Complaint Kabutar | Aatma Return Form</p>
+        <p style="margin-top:20px;">
+            Designed with 🤮 ek aisi team ne jo UX guidelines ko challenge samajhti hai.<br>
+            GDPR compliant (G=Guaranteed D=Definitely R=Real P=Privacy... okay nahi)
+        </p>
+        <p style="margin-top:15px;font-size:8px;">
+            Visitor Counter: <span id="visitor-counter">1,847,293,472</span> |
+            Netscape Navigator 4.0 ke liye optimized
+        </p>
+    </footer>
 
     <!-- Scripts -->
+    <script src="/js/sounds.js"></script>
+    <script src="/js/cookie.js"></script>
     <script src="/js/websocket.js"></script>
     <script src="/js/form.js"></script>
     <script src="/js/cart.js"></script>
