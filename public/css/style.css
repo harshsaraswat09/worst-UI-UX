@@ -767,6 +767,7 @@ nav .nav-links a:hover {
 
 /* Dark mode: filter invert - already chaotic page aur zyada chaotic ho jaati hai */
 body.dark-mode { filter: invert(1); }
+body { color-scheme: light only; }
 
 /* ===== 22. SCROLL PROGRESS BAR ===== */
 /* Inverted progress bar - upar jaao toh barhti hai, neeche jaao toh ghatati hai */
