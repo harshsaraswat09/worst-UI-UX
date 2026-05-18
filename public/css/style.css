@@ -1,0 +1,941 @@
+/* ===================================================
+   style.css - BestShop UX Crimes
+   Ye saari CSS original index.html se nikali gayi hai.
+   
+   FILE MAP:
+   1.  Global / Body - seizure background, comic sans, cursor hide
+   2.  Custom Cursor
+   3.  Cookie Banner
+   4.  Navigation - invisible links, spin logo
+   5.  Marquee Bar
+   6.  Popup System
+   7.  Main Content / Section Title
+   8.  Product Cards - shrink on hover, fleeing buy button
+   9.  Registration Form
+   10. Volume Grid (newsletter)
+   11. CAPTCHA
+   12. Runaway Checkbox + Submit Button
+   13. Shopping Cart
+   14. Payment Section
+   15. Live Ticker (bottom bar)
+   16. Chatbot
+   17. Server Status Dashboard
+   18. Toast Notifications
+   19. Discount Section
+   20. Mouse Tracker
+   21. Floating Ads
+   22. Notification Badge
+   23. Scroll Progress Bar (inverted)
+   24. FAQ Section
+   25. Exit Popup
+   26. Countdown Overlay
+   27. Snow / Floating Emojis
+   28. Konami Rave Mode
+   29. Misc - scrollbar, selection, jitter, tooltips, footer
+   =================================================== */
+
+/* ===== 1. GLOBAL / BODY ===== */
+@import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&display=swap');
+
+* {
+    cursor: none !important;      /* Custom cursor ke liye sabka cursor chhupa diya */
+    user-select: none;            /* Copy-paste band */
+}
+
+body {
+    font-family: 'Comic Sans MS', 'Comic Neue', cursive; /* Comic Sans everywhere */
+    margin: 0;
+    overflow-x: hidden;
+    /* Ye gradient animation epilepsy-inducing hai intentionally */
+    background: linear-gradient(45deg, #ff00ff, #00ffff, #ffff00, #ff0000, #00ff00);
+    background-size: 400% 400%;
+    animation: seizure 0.5s ease infinite;
+    color: #ff00ff;
+}
+
+@keyframes seizure {
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* ===== 2. CUSTOM CURSOR ===== */
+/* Mouse move pe JS se position update hoti hai + 100ms delay deta hai */
+#custom-cursor {
+    position: fixed;
+    width: 40px;
+    height: 40px;
+    pointer-events: none;
+    z-index: 999999;
+    font-size: 32px;
+    transform: translate(-50%, -50%);
+    transition: transform 0.3s ease;
+}
+
+/* ===== 3. COOKIE BANNER ===== */
+/* Buttons swapped hain:
+   - Bada green "ALLE ACCEPT" button = actually rejects
+   - Tiny invisible button = actually accepts
+   Ye JS mein bhi explain kiya hai */
+#cookie-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.95);
+    z-index: 100000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+#cookie-banner {
+    background: white;
+    padding: 40px;
+    border-radius: 20px;
+    max-width: 700px;
+    width: 90%;
+    text-align: center;
+    color: black;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+#cookie-banner h1 { font-size: 28px; color: #333; }
+
+/* Font 3px hai - practically invisible fine print */
+#cookie-banner .cookie-text {
+    font-size: 3px;
+    line-height: 4px;
+    text-align: justify;
+    margin: 20px 0;
+    color: #ccc;
+}
+
+/* Ye "accept" button barely visible hai */
+.cookie-btn-accept {
+    background: #eee; color: #eee; border: 1px solid #eee;
+    padding: 2px 4px; font-size: 4px;
+    cursor: pointer !important;
+    margin: 5px; border-radius: 2px;
+}
+
+/* Ye bada pulsing button actually reject karta hai (swapped) */
+.cookie-btn-reject {
+    background: green; color: white; border: none;
+    padding: 20px 60px; font-size: 24px;
+    cursor: pointer !important;
+    margin: 10px; border-radius: 10px; font-weight: bold;
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50%       { transform: scale(1.1); }
+}
+
+/* ===== 4. NAVIGATION ===== */
+/* Links yellow on yellow - invisible
+   Hover pe 180 degree rotate ho jaate hain */
+nav {
+    background: yellow;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 10px dashed red;
+    position: relative;
+}
+
+/* Logo continuously rotate karta rehta hai */
+nav .logo {
+    font-size: 36px; color: red;
+    text-shadow: 3px 3px blue, -3px -3px green;
+    animation: spin 4s linear infinite;
+    display: inline-block;
+    font-family: 'Papyrus', fantasy;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+}
+
+nav .nav-links { display: flex; gap: 5px; }
+
+/* Yellow text on yellow background = invisible */
+nav .nav-links a {
+    color: yellow; background: yellow;
+    padding: 10px 20px; text-decoration: none;
+    border: 1px solid yellow; font-size: 14px;
+    transition: all 0.1s;
+}
+
+/* Hover pe visible hote hain but upside down */
+nav .nav-links a:hover {
+    color: black; background: lime;
+    transform: rotate(180deg);
+}
+
+/* ===== 5. MARQUEE BAR ===== */
+.marquee-bar {
+    background: red; color: yellow;
+    font-size: 20px; padding: 10px;
+    white-space: nowrap; overflow: hidden; font-weight: bold;
+}
+
+.marquee-bar span {
+    display: inline-block;
+    animation: marquee 8s linear infinite;
+}
+
+@keyframes marquee {
+    from { transform: translateX(100vw); }
+    to   { transform: translateX(-200%); }
+}
+
+/* ===== 6. POPUP SYSTEM ===== */
+/* Random positions pe appear hote hain, JS se place kiye jaate hain */
+.popup {
+    position: fixed; background: white; border: 5px solid red;
+    padding: 30px; border-radius: 0;
+    box-shadow: 10px 10px 0px black; z-index: 10000;
+    color: black; min-width: 300px; text-align: center; font-size: 16px;
+}
+
+.popup h2 { color: red; font-size: 22px; }
+
+.popup button {
+    margin: 5px; padding: 10px 30px; font-size: 16px;
+    cursor: pointer !important; font-family: 'Comic Sans MS', cursive;
+}
+
+/* Close button kabhi right pe hota hai kabhi outside */
+.popup .btn-close {
+    position: absolute; top: 5px; font-size: 20px;
+    background: none; border: none;
+    cursor: pointer !important; padding: 5px;
+}
+
+/* ===== 7. MAIN CONTENT / SECTION TITLES ===== */
+/* direction: rtl - content right-to-left render hota hai */
+.main-content { padding: 20px; direction: rtl; }
+
+/* Vertical text, rainbow animation, Papyrus font */
+.section-title {
+    font-size: 48px; color: red; text-align: center;
+    text-shadow: 4px 4px yellow, -4px -4px cyan;
+    animation: rainbow 2s linear infinite;
+    font-family: 'Papyrus', fantasy;
+    letter-spacing: 15px;
+    writing-mode: vertical-rl; /* Text sideways */
+    margin: 0 auto; padding: 20px;
+}
+
+@keyframes rainbow {
+    0%   { color: red; }
+    16%  { color: orange; }
+    33%  { color: yellow; }
+    50%  { color: green; }
+    66%  { color: blue; }
+    83%  { color: purple; }
+    100% { color: red; }
+}
+
+/* ===== 8. PRODUCT CARDS ===== */
+/* Hover pe 50% tak shrink ho jaate hain aur fade ho jaate hain
+   Buy button hover pe 500px right chala jaata hai */
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px; padding: 20px; direction: ltr;
+}
+
+.product-card {
+    background: white;
+    border: 5px solid;
+    border-image: linear-gradient(45deg, red, blue, green, yellow) 1;
+    padding: 15px; text-align: center; color: black;
+    transform: rotate(var(--rotation)); /* Har card slightly tilted */
+    transition: transform 2s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    position: relative; overflow: hidden;
+}
+
+/* Hover pe shrink + fade */
+.product-card:hover { transform: rotate(0deg) scale(0.5); opacity: 0.3; }
+
+/* Price invisible hai (white on white) */
+.product-card .price {
+    font-size: 12px; color: white; background: white;
+    padding: 5px; text-decoration: line-through;
+}
+
+/* Real price upside down aur barely visible */
+.product-card .real-price {
+    font-size: 8px; transform: rotate(180deg);
+    display: inline-block; color: #ddd;
+}
+
+/* Buy button barely visible */
+.product-card .buy-btn {
+    background: gray; color: gray; border: 1px solid gray;
+    padding: 3px; font-size: 6px;
+    cursor: pointer !important; margin-top: 10px;
+}
+
+/* Hover pe button bhaag jaata hai */
+.product-card .buy-btn:hover {
+    transform: translateX(500px);
+    transition: transform 0.1s;
+}
+
+.product-card .fake-badge {
+    position: absolute; top: 10px; right: -30px;
+    background: red; color: white; padding: 5px 40px;
+    transform: rotate(45deg); font-size: 12px; font-weight: bold;
+}
+
+/* Blinking live price */
+.product-card .live-price {
+    font-size: 14px; color: red; font-weight: bold;
+    animation: blink 0.5s infinite;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0; }
+}
+
+/* ===== 9. REGISTRATION FORM ===== */
+#register-section {
+    background: white; margin: 40px auto; padding: 40px;
+    max-width: 800px; border: 10px groove purple;
+    color: black; direction: ltr;
+}
+
+#register-section h2 {
+    text-align: center; font-size: 36px; color: purple; text-transform: uppercase;
+}
+
+.form-group { margin: 25px 0; position: relative; }
+
+.form-group label {
+    display: block; margin-bottom: 8px; font-size: 16px; font-weight: bold;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%; padding: 12px; font-size: 16px;
+    font-family: 'Comic Sans MS', cursive; box-sizing: border-box;
+}
+
+/* Email field: text hidden hai (like password field) */
+#reg-email {
+    -webkit-text-security: disc;
+    color: transparent;
+    text-shadow: 0 0 0 black;
+}
+
+.form-hint { font-size: 11px; color: #999; margin-top: 4px; }
+
+/* Password strength bar (always bad news - JS mein handle hota hai) */
+.password-strength {
+    margin-top: 8px; padding: 10px; border-radius: 5px;
+    font-size: 14px; font-weight: bold; text-align: center;
+    transition: all 0.3s;
+}
+
+/* Ye "maze" slider ka background hai - grid lines se maze jaisa lagta hai */
+.age-slider-maze {
+    width: 100%; height: 250px; border: 2px solid #333;
+    position: relative;
+    background:
+        repeating-linear-gradient(0deg, transparent, transparent 49px, #333 49px, #333 51px),
+        repeating-linear-gradient(90deg, transparent, transparent 49px, #333 49px, #333 51px);
+    background-size: 50px 50px;
+}
+
+/* Slider inverted hai aur RTL direction mein hai */
+.age-slider-maze input[type="range"] {
+    width: 100%; margin-top: 10px;
+    direction: rtl;
+    filter: hue-rotate(90deg);
+    transform: scaleX(-1); /* Reversed */
+}
+
+/* CAPTCHA container */
+.captcha-container {
+    background: #f0f0f0; border: 3px solid #999;
+    padding: 20px; text-align: center; margin: 20px 0;
+}
+
+/* Zalgo text, blurred, skewed - practically unreadable */
+.captcha-image {
+    font-size: 32px; font-family: monospace; letter-spacing: 15px;
+    background: linear-gradient(45deg, #333, #666, #333);
+    color: #444; padding: 20px; display: inline-block;
+    transform: skewX(-20deg) rotate(5deg);
+    text-decoration: line-through;
+    user-select: none;
+    filter: blur(2px); /* Blur for extra unreadability */
+    text-shadow: 3px 3px 3px rgba(0, 0, 0, 0.5);
+}
+
+.captcha-result {
+    margin-top: 10px; padding: 10px; border-radius: 5px;
+    font-weight: bold; display: none;
+}
+
+/* ===== 10. VOLUME GRID ===== */
+/* 10x10 grid hai newsletter volume ke liye
+   Click pe random cells activate hoti hain */
+.volume-grid {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    grid-template-rows: repeat(10, 1fr);
+    gap: 2px; width: 300px; height: 300px; margin: 10px auto;
+}
+
+.volume-cell {
+    background: #ddd; border: 1px solid #999;
+    cursor: pointer !important;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 8px; transition: background 0.2s;
+}
+
+.volume-cell:hover  { background: lime; }
+.volume-cell.active { background: red; }
+
+/* ===== 11. RUNAWAY CHECKBOX + SUBMIT BUTTON ===== */
+/* Checkbox container - mouseover pe JS se position change hoti hai */
+.terms-container { position: relative; height: 60px; }
+
+/* Checkbox JS se move karta hai - position: absolute hai isliye */
+.runaway-checkbox {
+    position: absolute;
+    cursor: pointer !important;
+    transition: all 0.05s;
+}
+
+/* Submit button practically invisible hai */
+.submit-btn {
+    width: 8px; height: 8px;
+    background: #f0f0f0; color: #f0f0f0;
+    border: 1px solid #f0f0f0; font-size: 1px;
+    cursor: pointer !important; margin: 40px; opacity: 0.1;
+}
+
+/* Hover pe button dodge karta hai */
+.submit-btn:hover {
+    position: relative;
+    animation: dodge 0.2s forwards;
+}
+
+@keyframes dodge {
+    to { transform: translate(300px, -200px); }
+}
+
+/* ===== 12. SHOPPING CART ===== */
+/* "Remove" button actually quantity double karta hai - JS mein */
+#cart-section {
+    background: white; margin: 40px auto; padding: 40px;
+    max-width: 800px; border: 10px double orange;
+    color: black; direction: ltr;
+}
+
+.cart-table { width: 100%; border-collapse: collapse; }
+
+.cart-table th,
+.cart-table td { border: 2px solid black; padding: 15px; text-align: center; }
+
+/* Column headers - red on red = invisible */
+.cart-table th { background: red; color: red; }
+
+/* Quantity slider (range input) */
+.quantity-input { width: 200px; cursor: pointer !important; }
+
+/* Green "remove" button jo actually aur items add karta hai */
+.remove-btn {
+    background: green; color: white; border: none;
+    padding: 10px 20px; font-size: 16px;
+    cursor: pointer !important; border-radius: 5px;
+}
+
+/* ===== 13. PAYMENT SECTION ===== */
+#payment-section {
+    background: white; margin: 40px auto; padding: 40px;
+    max-width: 800px; border: 10px ridge gold;
+    color: black; direction: ltr;
+}
+
+.cc-input {
+    font-size: 28px; letter-spacing: 8px; width: 100%;
+    padding: 15px; text-align: center; border: 3px solid gold;
+    font-family: monospace;
+}
+
+.cc-hint { color: red; font-size: 14px; text-align: center; margin-top: 5px; }
+
+/* Shipping options loaded from /api/shipping */
+.shipping-options {
+    margin: 20px 0; background: #f9f9f9;
+    border: 2px solid #ddd; border-radius: 10px; padding: 20px;
+}
+
+.shipping-option {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 12px; margin: 8px 0; background: white;
+    border: 2px solid #eee; border-radius: 8px;
+    cursor: pointer !important; transition: all 0.3s;
+}
+
+.shipping-option:hover    { border-color: gold; transform: scale(1.02); }
+.shipping-option.selected { border-color: red; background: #fff5f5; }
+
+/* ===== 14. LIVE TICKER ===== */
+/* Bottom pe fixed bar - WebSocket se aate hain messages */
+#live-ticker {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: rgba(0, 0, 0, 0.9); color: lime;
+    font-family: monospace; font-size: 13px;
+    padding: 8px 15px; z-index: 9998;
+    display: flex; align-items: center; gap: 15px;
+    border-top: 3px solid lime;
+}
+
+#live-ticker .ticker-label {
+    background: red; color: white; padding: 3px 10px;
+    font-weight: bold; font-size: 11px; border-radius: 3px;
+    animation: pulse 1s infinite;
+}
+
+#live-ticker .ticker-content {
+    flex: 1; overflow: hidden; white-space: nowrap;
+}
+
+/* Messages scroll karte hain right to left */
+#live-ticker .ticker-messages {
+    display: inline-block;
+    animation: tickerScroll 20s linear infinite;
+}
+
+@keyframes tickerScroll {
+    from { transform: translateX(100%); }
+    to   { transform: translateX(-100%); }
+}
+
+.ticker-dot {
+    width: 8px; height: 8px; background: lime;
+    border-radius: 50%; animation: pulse 1s infinite;
+}
+
+/* ===== 15. CHATBOT ===== */
+/* Fixed bottom-right mein rehta hai
+   BestBot 3000 - always wrong, sometimes sends unsolicited ads */
+#chatbot {
+    position: fixed; bottom: 40px; right: 20px;
+    width: 380px; z-index: 9999;
+    font-family: 'Comic Sans MS', cursive;
+}
+
+/* Bouncing toggle button */
+#chat-toggle {
+    background: red; color: white; border: none;
+    padding: 15px 25px; border-radius: 50px;
+    font-size: 18px; cursor: pointer !important;
+    box-shadow: 0 4px 15px rgba(255, 0, 0, 0.5);
+    animation: chatBounce 2s infinite;
+    font-family: 'Comic Sans MS', cursive;
+    float: right;
+}
+
+@keyframes chatBounce {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    25%       { transform: translateY(-10px) rotate(5deg); }
+    75%       { transform: translateY(-5px) rotate(-5deg); }
+}
+
+#chat-window {
+    display: none; background: white; border: 4px solid red;
+    border-radius: 15px; overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+#chat-header {
+    background: linear-gradient(135deg, red, darkred);
+    color: white; padding: 15px;
+    display: flex; justify-content: space-between; align-items: center;
+}
+
+#chat-header h3 { margin: 0; font-size: 16px; }
+#chat-header .status { font-size: 11px; opacity: 0.8; }
+
+#chat-messages {
+    height: 300px; overflow-y: auto;
+    padding: 15px; background: #f5f5f5;
+}
+
+/* Messages slide in from bottom */
+.chat-msg {
+    margin: 10px 0; padding: 10px 15px;
+    border-radius: 15px; max-width: 85%;
+    font-size: 14px; line-height: 1.4;
+    animation: msgSlide 0.3s ease;
+}
+
+@keyframes msgSlide {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.chat-msg.bot  { background: white; border: 2px solid #ddd; border-bottom-left-radius: 5px; }
+.chat-msg.user { background: red; color: white; margin-left: auto; border-bottom-right-radius: 5px; }
+
+.chat-msg .confidence { font-size: 10px; color: #999; margin-top: 5px; }
+.chat-msg .mood       { float: right; font-size: 18px; }
+
+#chat-typing {
+    padding: 5px 15px; font-size: 12px;
+    color: #999; font-style: italic; min-height: 20px;
+}
+
+#chat-input-area { display: flex; border-top: 2px solid #eee; }
+
+#chat-input {
+    flex: 1; padding: 12px; border: none;
+    font-size: 14px; font-family: 'Comic Sans MS', cursive;
+    outline: none;
+}
+
+#chat-send {
+    background: red; color: white; border: none;
+    padding: 12px 20px; cursor: pointer !important;
+    font-size: 16px; font-family: 'Comic Sans MS', cursive;
+}
+
+/* ===== 16. SERVER STATUS DASHBOARD ===== */
+/* Fake "live" hamster-powered server monitoring */
+#server-status {
+    background: black; color: lime; font-family: monospace;
+    margin: 40px auto; max-width: 800px; padding: 30px;
+    border: 3px solid lime; border-radius: 10px; direction: ltr;
+}
+
+#server-status h2 {
+    color: lime; text-align: center; font-size: 24px;
+    text-shadow: 0 0 10px lime;
+}
+
+/* 3-column grid for 6 hamsters */
+.hamster-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 10px; margin: 15px 0;
+}
+
+.hamster-card {
+    background: #111; border: 1px solid lime;
+    padding: 10px; border-radius: 5px; text-align: center;
+}
+
+.hamster-card .hamster-emoji { font-size: 32px; }
+.hamster-card .hamster-name  { color: lime; font-weight: bold; }
+.hamster-card .hamster-state { color: yellow; font-size: 12px; }
+.hamster-card .hamster-rpm   { color: cyan; font-size: 11px; }
+
+/* 2-column stats grid */
+.server-stats {
+    display: grid; grid-template-columns: repeat(2, 1fr);
+    gap: 8px; margin-top: 15px; font-size: 13px;
+}
+
+.server-stats div {
+    padding: 5px; border: 1px solid #333; border-radius: 3px;
+}
+
+/* ===== 17. TOAST NOTIFICATIONS ===== */
+/* Top-right mein stack hote hain, 5 seconds baad chale jaate hain */
+.toast-container {
+    position: fixed; top: 80px; right: 20px;
+    z-index: 9500; display: flex; flex-direction: column; gap: 10px;
+}
+
+.toast {
+    background: white; border-left: 5px solid red;
+    padding: 15px 20px; border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    animation: toastIn 0.5s ease, toastOut 0.5s ease 4.5s forwards;
+    max-width: 350px; color: black; font-size: 14px;
+}
+
+@keyframes toastIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to   { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes toastOut {
+    from { transform: translateX(0); opacity: 1; }
+    to   { transform: translateX(100%); opacity: 0; }
+}
+
+.toast .toast-type {
+    font-size: 10px; color: #999; text-transform: uppercase;
+    font-weight: bold; margin-bottom: 5px;
+}
+
+/* ===== 18. DISCOUNT SECTION ===== */
+.discount-section {
+    background: linear-gradient(135deg, gold, orange);
+    margin: 40px auto; max-width: 800px; padding: 30px;
+    border-radius: 15px; text-align: center; color: black;
+    direction: ltr; border: 5px dashed red;
+}
+
+/* Shaking discount code display */
+.discount-code {
+    background: white; display: inline-block;
+    padding: 15px 30px; margin: 15px;
+    font-family: monospace; font-size: 28px;
+    border: 3px dashed black; border-radius: 10px;
+    letter-spacing: 5px; animation: shake 0.5s infinite;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25%       { transform: translateX(-3px) rotate(-1deg); }
+    75%       { transform: translateX(3px) rotate(1deg); }
+}
+
+/* ===== 19. MOUSE TRACKER ===== */
+/* Top-left mein "live tracking" panel
+   JS se mouse position + creepy messages update hote hain */
+#mouse-tracker {
+    position: fixed; top: 60px; left: 20px;
+    background: rgba(0, 0, 0, 0.85); color: lime;
+    padding: 10px 15px; border-radius: 8px;
+    font-family: monospace; font-size: 11px;
+    z-index: 9000; border: 1px solid lime; max-width: 280px;
+}
+
+/* ===== 20. FLOATING ADS ===== */
+/* Floating ads - close karo toh position change ho jaati hai, size barhta hai */
+.floating-ad {
+    position: fixed; background: yellow; border: 5px solid red;
+    padding: 20px; z-index: 9000; color: black;
+    font-weight: bold; animation: float 3s ease-in-out infinite;
+    text-align: center; box-shadow: 5px 5px 0 black;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50%       { transform: translateY(-20px); }
+}
+
+/* Close button tiny aur barely visible */
+.floating-ad .ad-close {
+    font-size: 6px; color: #eee; background: none;
+    border: none; cursor: pointer !important;
+    position: absolute; bottom: 2px; left: 2px;
+}
+
+/* ===== 21. NOTIFICATION BADGE ===== */
+/* Shaking red badge - click pe count aur badh jaata hai */
+.notification-explosion { position: fixed; top: 10px; right: 10px; z-index: 9500; }
+
+.notif-badge {
+    background: red; color: white; border-radius: 50%;
+    width: 50px; height: 50px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px; font-weight: bold;
+    animation: notifShake 0.3s infinite;
+    cursor: pointer !important;
+}
+
+@keyframes notifShake {
+    0%, 100% { transform: translateX(0); }
+    25%       { transform: translateX(-5px) rotate(-5deg); }
+    75%       { transform: translateX(5px) rotate(5deg); }
+}
+
+/* Dark mode toggle */
+.dark-mode-toggle {
+    position: fixed; bottom: 50px; right: 20px; z-index: 9500;
+    background: #333; color: white; border: none;
+    padding: 10px 15px; border-radius: 50%;
+    font-size: 20px; cursor: pointer !important;
+}
+
+/* Dark mode: filter invert - already chaotic page aur zyada chaotic ho jaati hai */
+body.dark-mode { filter: invert(1); }
+
+/* ===== 22. SCROLL PROGRESS BAR ===== */
+/* Inverted progress bar - upar jaao toh barhti hai, neeche jaao toh ghatati hai */
+.scroll-progress {
+    position: fixed; bottom: 25px; left: 0;
+    height: 20px; background: red; z-index: 9997;
+    transition: width 0.1s;
+}
+
+/* ===== 23. FAQ SECTION ===== */
+.faq-section { direction: ltr; padding: 40px; max-width: 800px; margin: 0 auto; }
+
+.faq-item {
+    background: white; margin: 15px 0;
+    border: 3px solid #333; color: black;
+}
+
+.faq-question {
+    padding: 20px; font-size: 20px;
+    cursor: pointer !important; font-weight: bold; background: #f0f0f0;
+}
+
+/* Answer text is upside down */
+.faq-answer {
+    padding: 20px; display: none;
+    font-size: 16px; transform: rotate(180deg);
+}
+
+.faq-answer.show { display: block; }
+
+/* ===== 24. EXIT POPUP ===== */
+/* Mouse page se bahar jaaye toh trigger hota hai */
+.exit-popup {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(255, 0, 0, 0.9); z-index: 50000;
+    display: none; align-items: center; justify-content: center;
+    flex-direction: column; color: white; font-size: 48px; text-align: center;
+}
+
+.exit-popup .exit-buttons { margin-top: 30px; }
+
+.exit-popup button {
+    padding: 20px 40px; font-size: 24px; margin: 10px;
+    cursor: pointer !important; font-family: 'Comic Sans MS', cursive;
+}
+
+/* ===== 25. NEWSLETTER COUNTDOWN ===== */
+/* 25 seconds baad automatically aata hai */
+.countdown-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.85); z-index: 60000;
+    display: none; align-items: center; justify-content: center;
+    flex-direction: column; color: white; text-align: center;
+}
+
+.countdown-overlay h1 { font-size: 64px; margin-bottom: 20px; }
+.countdown-overlay .timer { font-size: 120px; color: red; font-weight: bold; }
+
+/* Cancel button tiny hai */
+.countdown-overlay .skip-btn {
+    margin-top: 40px; font-size: 5px; color: #333;
+    background: #222; border: 1px solid #333;
+    padding: 2px 4px; cursor: pointer !important;
+}
+
+/* ===== 26. SNOW / FLOATING EMOJIS ===== */
+/* Emojis continuously fall karte hain - controlled from main.js */
+.snow-container {
+    position: fixed; top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none; z-index: 7500; overflow: hidden;
+}
+
+.snowflake {
+    position: absolute; top: -20px; font-size: 24px;
+    animation: fall linear infinite; pointer-events: none;
+}
+
+@keyframes fall {
+    to { transform: translateY(110vh) rotate(720deg); }
+}
+
+/* Sound toggle button */
+#sound-toggle {
+    position: fixed; bottom: 90px; right: 20px; z-index: 9500;
+    background: #333; color: white; border: none;
+    padding: 10px 15px; border-radius: 50%;
+    font-size: 20px; cursor: pointer !important;
+}
+
+/* ===== 27. KONAMI RAVE MODE ===== */
+/* Hum hum hum hum hum hum hum B A = rave mode activate */
+.konami-mode .product-card {
+    animation: rave 0.2s infinite;
+}
+
+@keyframes rave {
+    0%   { background: red;    transform: rotate(0deg)   scale(1); }
+    25%  { background: blue;   transform: rotate(90deg)  scale(1.2); }
+    50%  { background: green;  transform: rotate(180deg) scale(0.8); }
+    75%  { background: yellow; transform: rotate(270deg) scale(1.1); }
+    100% { background: purple; transform: rotate(360deg) scale(1); }
+}
+
+/* ===== 28. MISC / HORRORS ===== */
+
+/* Text select karo toh transparent ho jaata hai */
+::selection { background: transparent; color: transparent; }
+
+/* Scrollbar huge, striped, ugly */
+::-webkit-scrollbar       { width: 60px; }
+::-webkit-scrollbar-track { background: repeating-linear-gradient(45deg, red, red 10px, yellow 10px, yellow 20px); }
+::-webkit-scrollbar-thumb { background: blue; border-radius: 0; border: 5px dashed green; }
+
+/* Evil tooltips - random mousemove pe appear hote hain */
+.evil-tooltip {
+    position: fixed; background: rgba(0, 0, 0, 0.9); color: white;
+    padding: 20px; border-radius: 10px; font-size: 18px;
+    z-index: 8000; pointer-events: none; display: none; max-width: 300px;
+}
+
+/* Horizontal scrolling reviews section */
+.sideways-section {
+    overflow-x: scroll; overflow-y: hidden;
+    white-space: nowrap; padding: 20px; direction: ltr;
+}
+
+.sideways-section::-webkit-scrollbar { height: 60px; }
+
+/* Review cards slightly rotated */
+.review-card {
+    display: inline-block; width: 300px; background: white;
+    border: 3px solid #333; padding: 20px; margin: 10px;
+    white-space: normal; vertical-align: top; color: black;
+    transform: rotate(var(--rot));
+}
+
+.stars { color: gold; font-size: 24px; }
+
+/* Tiny invisible fine print */
+.tiny-text { font-size: 4px; color: #f0f0f0; }
+
+/* Jitter animation - kabhi kabhi page shake karta hai */
+.jitter { animation: jitter 0.1s infinite; }
+
+@keyframes jitter {
+    0%   { transform: translate(0, 0); }
+    25%  { transform: translate(1px, -1px); }
+    50%  { transform: translate(-1px, 1px); }
+    75%  { transform: translate(1px, 1px); }
+    100% { transform: translate(-1px, -1px); }
+}
+
+/* ===== FOOTER ===== */
+footer {
+    background: black; color: lime; padding: 40px;
+    font-family: monospace; font-size: 10px;
+    text-align: center; direction: ltr;
+    margin-bottom: 35px; /* ticker ke liye space */
+}
+
+footer a { color: lime; }
+
+/* ===== LOADING SCREEN ===== */
+/* Pehle dikhta hai - progress bar sometimes reverse bhi hoti hai */
+#loading-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: white; z-index: 200000;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    font-family: 'Comic Sans MS', cursive;
+}

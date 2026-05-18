@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BestShop - The Worst Experience</title>
+    <style>
+        /* General Chaos CSS */
+        body { font-family: 'Comic Sans MS', cursive, sans-serif; overflow-x: hidden; margin: 0; padding: 0; transition: filter 0.5s; background-color: #f0f0f0; }
+        body.dark-mode { filter: invert(1) hue-rotate(180deg); background-color: #111; color: #eee; }
+        body.konami-mode { animation: rave 0.5s infinite; }
+        @keyframes rave { 0% { background-color: red; } 33% { background-color: lime; } 66% { background-color: blue; } 100% { background-color: magenta; } }
+        
+        /* The terrible scrollbar */
+        ::-webkit-scrollbar { width: 60px; }
+        ::-webkit-scrollbar-track { background: repeating-linear-gradient(45deg, red, red 10px, yellow 10px, yellow 20px); }
+        ::-webkit-scrollbar-thumb { background: blue; border-radius: 0; border: 5px dashed green; }
+        
+        #custom-cursor { position: fixed; pointer-events: none; z-index: 9999; font-size: 24px; transform: translate(-50%, -50%); transition: transform 0.2s; }
+        
+        #main-content { padding: 20px; transition: transform 0.1s; }
+        .jitter { transform: translate(5px, 5px) rotate(1deg); }
+
+        /* Ticker */
+        #ticker-container { background: yellow; color: red; font-weight: bold; overflow: hidden; white-space: nowrap; padding: 5px; position: sticky; top: 0; z-index: 100; border-bottom: 3px dashed black; }
+        
+        /* Products Grid */
+        #products { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; margin-top: 20px; }
+        .product-card { background: white; border: 2px solid #333; padding: 15px; width: 200px; text-align: center; transform: rotate(var(--rotation)); box-shadow: 5px 5px 0px #000; position: relative; }
+        .fake-badge { position: absolute; top: -10px; right: -10px; background: red; color: white; padding: 5px; font-weight: bold; transform: rotate(15deg); }
+        .buy-btn { background: green; color: white; border: none; padding: 10px; cursor: pointer; width: 100%; font-weight: bold; margin-top: 10px; }
+
+        /* Reviews */
+        #reviews-section { display: flex; overflow-x: scroll; padding: 20px; gap: 15px; background: #ddd; margin-top: 30px; }
+        .review-card { background: white; padding: 10px; min-width: 200px; transform: rotate(var(--rot)); border: 1px solid #999; }
+
+        /* Snow */
+        #snow-container { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9000; overflow: hidden; }
+        .snowflake { position: absolute; top: -50px; animation: fall linear infinite; }
+        @keyframes fall { to { transform: translateY(110vh); } }
+
+        /* Scroll Progress */
+        #scroll-progress-container { position: fixed; top: 0; left: 0; width: 100%; height: 5px; background: transparent; z-index: 9999; }
+        #scroll-progress { height: 100%; background: red; width: 100%; } /* Inverted logic */
+
+        /* Evil Tooltip */
+        #evil-tooltip { position: fixed; background: black; color: white; padding: 5px 10px; z-index: 10000; display: none; pointer-events: none; font-size: 12px; }
+
+        /* Toast Container */
+        #toast-container { position: fixed; bottom: 20px; left: 20px; z-index: 9998; display: flex; flex-direction: column; gap: 10px; }
+        .toast { background: #333; color: white; padding: 10px 15px; border-radius: 5px; animation: slideIn 0.3s; display: flex; align-items: center; gap: 10px; }
+        .toast-type { background: #555; padding: 2px 5px; border-radius: 3px; font-size: 10px; text-transform: uppercase; }
+        @keyframes slideIn { from { transform: translateX(-100%); } to { transform: translateX(0); } }
+
+        /* Popups */
+        .popup { position: fixed; background: white; border: 3px solid black; padding: 20px; box-shadow: 10px 10px 0px rgba(0,0,0,0.5); z-index: 9500; min-width: 250px; }
+        .btn-close { position: absolute; top: -10px; background: red; color: white; border: 2px solid black; border-radius: 50%; width: 30px; height: 30px; cursor: pointer; font-weight: bold; }
+
+        /* Chat Window */
+        #chat-window { position: fixed; bottom: 20px; right: 20px; width: 300px; height: 400px; background: white; border: 2px solid #000; display: none; z-index: 9900; flex-direction: column; box-shadow: -5px -5px 0px red; }
+        #chat-toggle { position: fixed; bottom: 20px; right: 20px; z-index: 9900; background: blue; color: white; padding: 15px; border-radius: 50%; cursor: pointer; border: 2px solid black; font-weight: bold; box-shadow: 2px 2px 0px black; }
+        #chat-messages { flex-grow: 1; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; gap: 10px; background: #f9f9f9; }
+        .chat-msg { padding: 8px 12px; border-radius: 15px; max-width: 80%; }
+        .chat-msg.user { align-self: flex-end; background: #dcf8c6; border-bottom-right-radius: 0; }
+        .chat-msg.bot { align-self: flex-start; background: #fff; border: 1px solid #ccc; border-bottom-left-radius: 0; }
+        .confidence { font-size: 10px; color: #888; margin-top: 5px; font-style: italic; }
+        #chat-input-container { display: flex; padding: 10px; border-top: 1px solid #ccc; }
+        #chat-input { flex-grow: 1; padding: 8px; }
+        #chat-typing { font-size: 12px; color: gray; padding: 0 10px; height: 15px; }
+
+        /* Forms */
+        .form-section { background: #ffe; padding: 20px; border: 2px dashed orange; margin-top: 30px; }
+        #volume-grid { display: grid; grid-template-columns: repeat(10, 1fr); gap: 2px; max-width: 300px; margin-top: 10px; }
+        .volume-cell { border: 1px solid #999; text-align: center; cursor: pointer; font-size: 10px; background: #ddd; }
+        .volume-cell.active { background: red; color: white; font-weight: bold; }
+        
+        #signature-canvas { border: 2px solid blue; background: #eee; cursor: crosshair; display: block; margin-top: 10px; }
+
+        #terms-container { position: relative; height: 50px; background: #eee; border: 1px solid #ccc; margin-top: 10px; overflow: hidden; }
+        #terms-label { position: absolute; cursor: pointer; background: white; padding: 5px; border: 1px solid black; transition: all 0.1s; }
+
+        .shipping-option { border: 1px solid #ccc; padding: 10px; margin: 5px 0; cursor: pointer; display: flex; justify-content: space-between; align-items: center; background: white; }
+        .shipping-option.selected { background: #e0ffe0; border-color: green; border-width: 2px; }
+
+        /* Dashboard */
+        #dashboard { background: #333; color: lime; padding: 20px; font-family: monospace; margin-top: 30px; }
+        #hamster-grid { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+        .hamster-card { border: 1px solid lime; padding: 10px; width: 120px; text-align: center; }
+        .hamster-emoji { font-size: 30px; }
+        
+        /* Overlays */
+        #countdown-overlay, #exit-popup { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.8); z-index: 10000; display: none; justify-content: center; align-items: center; color: white; text-align: center; flex-direction: column; }
+        #countdown-timer { font-size: 100px; font-weight: bold; color: red; }
+
+        /* Header UI */
+        header { display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; background: #fff; border-bottom: 2px solid #000; position: sticky; top: 30px; z-index: 90; }
+        
+        /* Floating Ads */
+        .floating-ad { position: fixed; border: 3px dotted red; background: yellow; padding: 20px; z-index: 8000; font-weight: bold; text-align: center; box-shadow: 5px 5px 0px rgba(0,0,0,0.2); }
+
+        .faq-question { cursor: pointer; background: #ddd; padding: 10px; margin-top: 5px; font-weight: bold; }
+        .faq-answer { display: none; padding: 10px; border: 1px solid #ddd; background: #fff; transform: rotate(180deg); }
+        .faq-answer.show { display: block; }
+    </style>
+</head>
+<body>
+    <div id="scroll-progress-container"><div id="scroll-progress"></div></div>
+    <div id="custom-cursor">🍕</div>
+    <div id="snow-container"></div>
+    <div id="evil-tooltip"></div>
+    <div id="toast-container"></div>
+
+    <!-- Loading & Cookie Overlays -->
+    <div id="loading-overlay" style="position:fixed;top:0;left:0;width:100vw;height:100vh;background:black;color:lime;z-index:999999;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:monospace;">
+        <h1>LOADING CHAOS...</h1>
+        <div style="width:80%;height:30px;border:3px solid lime;margin:20px;">
+            <div id="loading-bar" style="width:0%;height:100%;background:red;transition:width 0.2s;"></div>
+        </div>
+        <h2 id="loading-percent">0%</h2>
+        <p id="loading-status">Initializing quantum processors...</p>
+    </div>
+
+    <div id="cookie-overlay" style="position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.9);z-index:999998;display:none;flex-direction:column;align-items:center;justify-content:center;color:white;text-align:center;">
+        <div id="cookie-banner" style="background:white;color:black;padding:40px;border:10px dotted red;max-width:600px;">
+            <h2>🍪 We value your privacy! (Just kidding)</h2>
+            <p style="font-size:8px;color:#aaa;">By continuing, you agree to sell your soul, let us track your mouse, and accept 47,000 cookies.</p>
+            <button id="cookie-accept-btn" style="background:none;border:none;color:#ddd;font-size:6px;cursor:pointer;">Only necessary cookies</button>
+            <br><br>
+            <button id="cookie-reject-btn" style="background:green;color:white;padding:20px;font-size:24px;font-weight:bold;animation:rave 0.5s infinite;cursor:pointer;">ACCEPT ALL</button>
+        </div>
+    </div>
+
+    <div id="ticker-container"><marquee id="ticker-messages" scrollamount="15">Welcome to BestShop! The best place to lose your money and your mind!</marquee></div>
+
+    <header>
+        <h1>BestShop 🛒</h1>
+        <div>
+            <button id="sound-toggle" onclick="toggleSound()" style="font-size:20px;background:none;border:none;cursor:pointer;margin-right:10px;">🔇</button>
+            <button onclick="toggleDarkMode()">Toggle Dark Mode</button>
+            <span style="margin-left: 20px;">Notifications: <span id="notif-count" style="background:red;color:white;padding:2px 5px;border-radius:10px;font-weight:bold;cursor:pointer;" onclick="addNotifications()">0</span></span>
+        </div>
+    </header>
+
+    <div id="main-content">
+        <div style="background:#eef; padding: 10px; border: 1px solid #ccc; margin-bottom: 20px;">
+            <strong>Mouse Tracker:</strong> <span id="track-pos">0, 0</span> | <span id="track-msg">Waiting...</span><br>
+            <strong>Online Users:</strong> <span id="online-count">Loading...</span> | <strong>Visitors:</strong> <span id="visitor-counter">0</span>
+        </div>
+
+        <h2 style="text-align: center; margin-top: 40px;">Our Exclusive Products</h2>
+        <div id="products"></div>
+
+        <h2 style="text-align: center; margin-top: 40px;">Customer Reviews</h2>
+        <div id="reviews-section"></div>
+
+        <div class="form-section">
+            <h2>Registration Form (Good Luck)</h2>
+            <form onsubmit="return handleFormSubmit(event)">
+                <label>Password (Min 45 chars):</label><br>
+                <input type="text" id="reg-password" oninput="checkPassword(this.value)" style="width:100%; padding: 5px;"><br>
+                <div id="password-strength" style="display:none; padding: 5px; margin-top: 5px; font-size: 12px;"></div>
+                
+                <br><label>Confirm Password (MUST BE DIFFERENT):</label><br>
+                <input type="text" id="reg-password-confirm" style="width:100%; padding: 5px;"><br>
+                
+                <br><label>Birth Year:</label><br>
+                <select id="birth-year"></select><br>
+
+                <br><label>Set Newsletter Volume: <span id="volume-display">100%</span></label>
+                <div id="volume-grid"></div>
+
+                <br><label>CAPTCHA: Type this text -> <strong id="captcha-text" style="font-size:20px; background:#fff; padding:2px;"></strong> <button type="button" onclick="refreshCaptcha()">Refresh</button></label><br>
+                <input type="text" id="captcha-input">
+                <button type="button" onclick="verifyCaptcha()">Verify</button>
+                <div id="captcha-result" style="display:none; padding: 5px; margin-top: 5px;"></div>
+
+                <br><label>Digital Signature (Draw inverted):</label>
+                <canvas id="signature-canvas" width="300" height="100"></canvas>
+
+                <br><label>Accept Terms & Conditions:</label>
+                <div id="terms-container">
+                    <label id="terms-label"><input type="checkbox" required> I accept that I read nothing.</label>
+                </div>
+
+                <br><button type="submit" style="background:green;color:white;padding:10px 20px;border:none;cursor:pointer;">Register Now</button>
+            </form>
+        </div>
+
+        <div class="form-section">
+            <h2>Your Cart</h2>
+            <table width="100%" border="1" style="border-collapse: collapse; text-align: center; background: white;">
+                <tr><th>Item</th><th>Quantity Slider</th><th>Action</th></tr>
+                <tr>
+                    <td>Invisible Socks</td>
+                    <td><input type="range" min="1" max="100" value="1"></td>
+                    <td><button onclick="addMore(this)" style="background:red;color:white;">Remove</button></td>
+                </tr>
+            </table>
+
+            <br>
+            <button onclick="getDiscount()" style="background:purple;color:white;padding:5px;">Apply Discount</button>
+            <div id="discount-display" style="margin-top: 10px;"></div>
+
+            <br>
+            <div id="shipping-options">Loading shipping...</div>
+
+            <br>
+            <label>Credit Card Number (Will be broadcasted live):</label><br>
+            <input type="text" oninput="broadcastCC(this.value)" placeholder="XXXX-XXXX-XXXX-XXXX">
+            <div id="cc-broadcast" style="margin-top: 5px; font-weight: bold; color: red;"></div>
+
+            <br><button type="button" onclick="handlePayment()" style="background:gold;padding:15px;font-size:18px;font-weight:bold;width:100%;cursor:pointer;">PAY NOW (Failure Guaranteed)</button>
+        </div>
+
+        <div class="form-section">
+            <h2>FAQ (Read Upside Down)</h2>
+            <div class="faq-question" onclick="toggleFaq(this)">Q: Where is my order?</div>
+            <div class="faq-answer">A: We don't know either. Ask the carrier pigeon.</div>
+            
+            <div class="faq-question" onclick="toggleFaq(this)">Q: How do I refund?</div>
+            <div class="faq-answer">A: You can't. Thanks for the donation!</div>
+            
+            <div class="faq-question" onclick="toggleFaq(this)">Q: Is this website a joke?</div>
+            <div class="faq-answer">A: Yes. But your credit card charge is real. (Just kidding, it's fake)</div>
+        </div>
+
+        <div id="dashboard">
+            <h3>Hamster Server Dashboard</h3>
+            <div id="server-stats">Loading stats...</div>
+            <div id="hamster-grid"></div>
+        </div>
+    </div>
+
+    <!-- Floating Ad -->
+    <div id="ad-1" class="floating-ad" style="top: 20%; left: 10%; width: 200px;">
+        HOT SINGLES IN YOUR AREA WANT TO SELL YOU TUPPERWARE!<br><br>
+        <button onclick="moveAd('ad-1')">Close [X]</button>
+    </div>
+
+    <!-- Chat -->
+    <button id="chat-toggle" onclick="toggleChat()">💬 Chat</button>
+    <div id="chat-window">
+        <div style="background:blue;color:white;padding:10px;display:flex;justify-content:space-between;">
+            <b>BestBot 3000</b>
+            <button onclick="toggleChat()" style="background:red;color:white;border:none;cursor:pointer;">X</button>
+        </div>
+        <div id="chat-messages"></div>
+        <div id="chat-typing"></div>
+        <div id="chat-input-container">
+            <input type="text" id="chat-input" placeholder="Type nonsense here..." onkeypress="if(event.key==='Enter') sendChat()">
+            <button onclick="sendChat()">Send</button>
+        </div>
+    </div>
+
+    <!-- Overlays -->
+    <div id="countdown-overlay">
+        <h1>SUBSCRIBE TO OUR NEWSLETTER IN</h1>
+        <div id="countdown-timer">10</div>
+        <button onclick="closeCountdown()" style="margin-top:20px;padding:10px;">I'd rather not</button>
+    </div>
+
+    <div id="exit-popup">
+        <h1>WAIT! DON'T LEAVE!</h1>
+        <p>WE WILL GIVE YOU 0% OFF IF YOU STAY!</p>
+        <button onclick="closeExitPopup()" style="padding:10px;font-size:20px;">I AM LEAVING</button>
+    </div>
+
+    <!-- Sounds (using Web Audio API in sounds.js) -->
+    <script src="/js/sounds.js"></script>
+    <script src="/js/cookie.js"></script>
+
+    <!-- Scripts -->
+    <script src="/js/websocket.js"></script>
+    <script src="/js/form.js"></script>
+    <script src="/js/cart.js"></script>
+    <script src="/js/main.js"></script>
+</body>
+</html>
