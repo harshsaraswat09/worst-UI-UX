@@ -206,8 +206,18 @@ function showPopup() {
 }
 
 function schedulePopups() {
-    setTimeout(showPopup, 3000);                              // 3 sec baad pehla popup
-    setInterval(() => { if (Math.random() > 0.4) showPopup(); }, 8000); // Phir har 8 sec
+    // Pehla popup 20 sec baad (pehle itna jaldi tha ki pagal kar deta tha)
+    setTimeout(showPopup, 20000);
+
+    // Phir har 25-45 seconds mein ek popup (random delay)
+    function scheduleNext() {
+        const delay = 25000 + Math.random() * 20000; // 25s se 45s ke beech
+        setTimeout(() => {
+            if (Math.random() > 0.3) showPopup(); // 70% chance
+            scheduleNext(); // next schedule karo
+        }, delay);
+    }
+    setTimeout(scheduleNext, 20000);
 }
 
 // ===== NEWSLETTER COUNTDOWN =====
